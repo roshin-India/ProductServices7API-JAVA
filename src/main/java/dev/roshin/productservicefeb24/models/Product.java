@@ -18,4 +18,6 @@ public class Product {
     private Category category;
 
 
+//    public static void add(Product product) {
+//    }
 }

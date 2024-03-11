@@ -133,13 +133,15 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
     public List<Product> getProducts() {
-        List<Product> listProduct = new ArrayList<Product>();
-        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
-        for (FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
-            listProduct.add(fakeStoreProductDto.toProduct());
+        List<Product> products = new ArrayList<>();
+        FakeStoreProductDto[] fakeStoreProducts = restTemplate.getForObject(
+                "https://fakestoreapi.com/products",
+                FakeStoreProductDto[].class);
+        for (FakeStoreProductDto fakeStoreProduct : fakeStoreProducts) {
+            products.add(fakeStoreProduct.toProduct());
 
         }
-        return listProduct;
+        return products;
     }
 
 
