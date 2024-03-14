@@ -1,22 +1,21 @@
 package dev.roshin.productservicefeb24.controllers;
 
 import dev.roshin.productservicefeb24.dtos.CreateProductRequestDto;
+import dev.roshin.productservicefeb24.exceptions.ProductNotFoundException;
 import dev.roshin.productservicefeb24.models.Category;
 import dev.roshin.productservicefeb24.models.Product;
 import dev.roshin.productservicefeb24.services.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 
 @RestController
 public class ProductController {
-
-    private final ProductService productService;
-
-    public ProductController(ProductService productService){
-        this.productService=productService;     //dependency injection
+    private ProductService productService;
+    ProductController(@Qualifier("SelfProductService") ProductService productService) {
+        this.productService = productService;
     }
 
     //POST/products
@@ -28,18 +27,18 @@ public class ProductController {
 
     @PostMapping("/products")
     public Product createProduct(@RequestBody CreateProductRequestDto request){
-            return productService.createProduct(
-                    request.getTitle(),
-                    request.getDescription(),
-                    request.getImage(),
-                    request.getCategory(),
-                    request.getPrice()
-            );
+        return productService.createProduct(
+                request.getTitle(),
+                request.getDescription(),
+                request.getImage(),
+                request.getCategory(),
+                request.getPrice()
+        );
     }
     // GET/products/1
     // GET/products/201
     @GetMapping("/products/{id}")
-    public Product getProductDetails(@PathVariable("id") long productId){
+    public Product getProductDetails(@PathVariable("id") long productId)throws ProductNotFoundException {
         return productService.getSingleProduct(productId);
     }
 
@@ -50,7 +49,7 @@ public class ProductController {
 
 
     @DeleteMapping("/products/{id}")
-    public Product deleteProduct(@PathVariable("id")Long productId){
+    public Product deleteProduct(@PathVariable("id")Long productId)throws ProductNotFoundException{
         return productService.deleteProduct(productId);
     }
     @PutMapping("/products/{id}")

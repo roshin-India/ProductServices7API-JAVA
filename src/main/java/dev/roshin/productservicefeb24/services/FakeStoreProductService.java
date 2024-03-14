@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Service
+@Service("FakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
 
     private RestTemplate restTemplate;
@@ -23,7 +23,7 @@ public class FakeStoreProductService implements ProductService {
     public Product getSingleProduct(long productId) {
         FakeStoreProductDto fakeStoreProduct=restTemplate.getForObject(
                 "https://fakestoreapi.com/products/" + productId,
-        FakeStoreProductDto.class);
+                FakeStoreProductDto.class);
 
         return fakeStoreProduct.toProduct();
     }
@@ -75,32 +75,13 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
     public Product deleteProduct(Long productId) {
-            Product product = getSingleProduct(productId); // Retrieve and possibly throw exception if not found
-            restTemplate.delete("https://fakestoreapi.com/products/" + productId); // Delete the product
-            return product; // Return the deleted product's details
+        Product product = getSingleProduct(productId); // Retrieve and possibly throw exception if not found
+        restTemplate.delete("https://fakestoreapi.com/products/" + productId); // Delete the product
+        return product; // Return the deleted product's details
 
     }
 
     @Override
-//    public Product updateProduct(Long productId, Product product) {
-//        FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
-//        fakeStoreProductDto.setTitle(product.getTitle()); // Access title through product object
-//        fakeStoreProductDto.setCategory(product.getCategory().getTitle()); // Assuming getCategory() returns a Category object
-//        fakeStoreProductDto.setPrice(product.getPrice()); // Access price through product object
-//        fakeStoreProductDto.setImage(product.getImage()); // Access image through product object
-//        fakeStoreProductDto.setDescription(product.getDescription()); // Access description through product object
-//
-//        FakeStoreProductDto response = restTemplate.postForObject(
-//                "https://fakestoreapi.com/products/" + productId, // URL
-//                fakeStoreProductDto, // Request body
-//                FakeStoreProductDto.class); // Data type of response
-//
-//        // Assuming you have a method in FakeStoreProductDto to convert it back to a Product entity
-//        return response.toProduct();
-//    }
-
-
-
     public Product updateProduct(Long productId, Product product) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("id", productId.toString());
@@ -119,17 +100,17 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
 
-        public List<Category> getCategories() {
-            List<String> fakeStoreCategoryDtoList = restTemplate.getForObject(
-                    "https://fakestoreapi.com/products/categories", List.class);
-            List<Category> categoryList = new ArrayList<Category>();
-            for (String fakeStoreCategoryDto : fakeStoreCategoryDtoList) {
-                Category tempCategory = new Category();
-                tempCategory.setTitle(fakeStoreCategoryDto);
-                categoryList.add(tempCategory);
-            }
-            return categoryList;
+    public List<Category> getCategories() {
+        List<String> fakeStoreCategoryDtoList = restTemplate.getForObject(
+                "https://fakestoreapi.com/products/categories", List.class);
+        List<Category> categoryList = new ArrayList<Category>();
+        for (String fakeStoreCategoryDto : fakeStoreCategoryDtoList) {
+            Category tempCategory = new Category();
+            tempCategory.setTitle(fakeStoreCategoryDto);
+            categoryList.add(tempCategory);
         }
+        return categoryList;
+    }
 
     @Override
     public List<Product> getProducts() {
